@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+  <html lang = "en">
+    <head>
+        <title>adjectils - Dungeons</title>
+        <link rel="stylesheet" href = "/stylesheet.css">
+        <meta name = "description" content = "Decrepit utilities for Hypixel SkyBlock">
+        <meta name = "author" content = "adjective_n0un">
+        <meta name = "viewport" content="width=device-width, initial-scale=0.6">
+        <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+        <link rel="manifest" href="./favicon/site.webmanifest">
+        <script type="text/javascript" src="jquery-3.6.3.min.js"></script>
+        <script src = "timeToMinutes.js"></script>
+    </head>
+  <body onload="updatePage()">
+  
+      <script>
+      $(function(){
+        $("#nav").load("nav.html"); 
+        $("#footer").load("footer.html", function() { setWord(); }); 
+      });
+      </script>
+  <header id = "nav" class = navblock></header>
+  <div style = "margin-bottom: 30px;">&nbsp;</div>
+  <br>
+  <div style = "text-align:center">
+  <label>Username: <input type = "text" id = "nameinput" onchange = updateUser(value)>&nbsp;</label><button onclick = updateUser(nameinput.value) style = "width: 80px;  text-align:center">Refresh ⟳</button><br>
+  <span id = "refreshstatus"></span><br>
+  <span id = "status"></span><br>
+  <span id = "otherstatus"></span><br>
+  
+  <div>
+    <form action = "#" >
+      <label>Profile:
+      <select id = profileid value = 4 onchange = updateUser(nameinput.value)>
+        <option id = profile0 value = 0>–––––</option>
+        <option id = profile1 value = 1>–––––</option>
+        <option id = profile2 value = 2>–––––</option>
+        <option id = profile3 value = 3>–––––</option>
+        <option id = profile4 value = 4>–––––</option>
+      </select>
+      </label>
+    </form>
+  </div>
+  </div>
+  <br>
+  <section class = "flex_box_cata" style = "margin:auto" id = "allbox">
+    <div class = "flex_index_row" style = "width:95%; align-items: stretch;" id = "catarow">
+        <div class = "flex_cata_box" style = "width:29%;" id = "levelsbox">
+            <span class = header class = "flex_full_row" style = "margin-bottom: 20px;">Dungeon levels</span>
+            <table style = "width:100%">
+            <tr><td><span class = "flex_full_row">Daily runs remaining: </span></td><td><span id = "dailyruns" class = "flex_align_right"></span></td></tr>
+            <tr><td id = "gooutside" class = "flex_full_row" style = "color: #ff4444; font-size:10px; padding-top:3px"></td><td><span id = "dailytoday" class = "flex_align_right" style = "font-size: 10px; margin-bottom: 6px; align-items: flex-end;">...</span></td></tr>
+            <tr><td ><span class = "flex_full_row">Catacombs level: </span></td><td><span id = "catalevel" class = "flex_align_right"></span></td></tr>
+            <tr><td class = "flex_full_row"></td><td><span id = "catapercent" class = "flex_align_right" style = "font-size: 10px; margin-bottom: 6px;">...</span></td></tr>
+            <tr><td><span class = "flex_full_row"><span style = "color:#ff8888; padding-right: 8px;">Archer</span> level: </span></td><td><span id = "archlevel" class = "flex_align_right"></span></td></tr>
+            <tr><td class = "flex_full_row"></td><td><span id = "archpercent" class = "flex_align_right" style = "font-size: 10px; margin-bottom: 6px;">...</span></td></tr>
+            <tr><td><span class = "flex_full_row"><span style = "color:#ffbb88; padding-right: 8px;">Berserk</span> level: </span></td><td><span id = "berslevel" class = "flex_align_right"></span></td></tr>
+            <tr><td class = "flex_full_row"></td><td><span id = "berspercent" class = "flex_align_right" style = "font-size: 10px; margin-bottom: 6px;">...</span></td></tr>
+            <tr><td><span class = "flex_full_row"><span style = "color:#bb88ff; padding-right: 8px;">Healer</span> level: </span></td><td><span id = "heallevel" class = "flex_align_right"></span></td></tr>
+            <tr><td class = "flex_full_row"></td><td><span id = "healpercent" class = "flex_align_right" style = "font-size: 10px; margin-bottom: 6px;">...</span></td></tr>
+            <tr><td><span class = "flex_full_row"><span style = "color:#88ffff; padding-right: 8px;">Mage</span> level: </span></td><td><span id = "magelevel" class = "flex_align_right"></span></td></tr>
+            <tr><td class = "flex_full_row"></td><td><span id = "magepercent" class = "flex_align_right" style = "font-size: 10px; margin-bottom: 6px;">...</span></td></tr>
+            <tr><td><span class = "flex_full_row"><span style = "color:#88ff88; padding-right: 8px;">Tank</span> level: </span></td><td><span id = "tanklevel" class = "flex_align_right"></span></td></tr>
+            <tr><td class = "flex_full_row"></td><td><span id = "tankpercent" class = "flex_align_right" style = "font-size: 10px; margin-bottom: 6px;">...</span></td></tr>
+        </table>
+            
+        </div>
+        <div class = "flex_cata_box" style = "width:69%;" id = "calcbox">
+            <span class = header class = "flex_full_row">Milestone calculations</span>
+            <span class = fineprint style = "display:flex; flex-basis:100%;">Note: For ease of calculation, it's assumed that each floor has been completed at least 25 times, and that a score of exactly 300 is reached every run.</span>
+            <table class = "flex_full_row">
+            <tr><td>
+                <form action = "#">
+                    <div id = "floorselectdiv">
+                    <label>Floor:
+                    <select id = "selectedfloor" onchange = updateCata(nameinput.value)>
+                        <option value = 300000>M7</option>
+                        <option value = 100000>M6</option>
+                        <option value = 70000>M5</option>
+                        <option value = 55000>M4</option>
+                        <option value = 35000>M3</option>
+                        <option value = 20000>M2</option>
+                        <option value = 15000>M1</option>
+                        <option value = 28000>F7</option>
+                        <option value = 4880>F6</option>
+                        <option value = 2400>F5</option>
+                        <option value = 1420>F4</option>
+                        <option value = 560>F3</option>
+                        <option value = 220>F2</option>
+                        <option value = 110>F1</option>
+                        <option value = 55>Entrance</option>
+                    </select>
+                    </label>
+                    </div>
+                    <div id = "ringselectdiv">
+                    <label>Catacombs Expert Ring:
+                    <select id = "cataexpert" onchange = updateCata(nameinput.value)>
+                        <option value = 0.1>Yes</option>
+                        <option value = 0>No</option>
+                    </select>
+                    </label>
+                    </div>
+                    <div id = "hecaselectdiv">
+                    <label>Hecatomb level:
+                    <select id = "hecatomb" onchange = updateCata(nameinput.value)>
+                        <option value = 0.02>X</option>
+                        <option value = 0.0184>IX</option>
+                        <option value = 0.0168>VIII</option>
+                        <option value = 0.0152>VII</option>
+                        <option value = 0.0136>VI</option>
+                        <option value = 0.012>V</option>
+                        <option value = 0.0104>IV</option>
+                        <option value = 0.0088>III</option>
+                        <option value = 0.0072>II</option>
+                        <option value = 0.0056>I</option>
+                        <option value = 0>0</option>
+                    </select>
+                    </label>
+                    </div>
+                    <div id = "scarfselectdiv">
+                        <label>Scarf accessory:
+                        <select id = "grimoire" onchange = updateCata(nameinput.value)>
+                            <option value = 0.06>Grimoire (6%)</option>
+                            <option value = 0.04>Thesis (4%)</option>
+                            <option value = 0.02>Studies (2%)</option>
+                            <option value = 0.0>None</option>
+                        </select>
+                        </label>
+                        </div>
+                    <div id = "globalselectdiv">
+                        <label>Global boost:
+                        <select id = "global" onchange = updateCata(nameinput.value)>
+                            <option value = 1>0%</option>
+                            <option value = 1.05>5%</option>
+                            <option value = 1.1>10%</option>
+                            <option value = 1.15>15%</option>
+                            <option value = 1.2>20%</option>
+                        </select>
+                        </label>
+                    </div>
+                    <div id = "mayorselectdiv">
+                        <label>Mayor boost:
+                        <select id = "mayor" onchange = updateCata(nameinput.value)>
+                            <option value = 1>0%</option>
+                            <option value = 1.5>Derpy (50%)</option>
+                        </select>
+                        </label>
+                    </div>
+                    <div id = "scarfshardselectdiv">
+                        <label>Catacombs Graduate level:
+                        <select id = "scarfshardlevel" onchange = updateCata(nameinput.value)>
+                            <option value = 0>0 (0%)</option>
+                            <option value = 0.02>I (2%)</option>
+                            <option value = 0.04>II (4%)</option>
+                            <option value = 0.06>III (6%)</option>
+                            <option value = 0.08>IV (8%)</option>
+                            <option value = 0.1>V (10%)</option>
+                            <option value = 0.12>VI (12%)</option>
+                            <option value = 0.14>VII (14%)</option>
+                            <option value = 0.16>VIII (16%)</option>
+                            <option value = 0.18>IX (18%)</option>
+                            <option value = 0.2>X (20%)</option>
+                        </select>
+                        </label>
+                    </div>
+                </form>
+            </td></tr>
+            </table>
+            <table>
+                <tr>
+                    <td>
+                        <label>Toxophilite (Archer XP Boost):</label></td>
+                        <td> <select id = "archboost" value = "1.1" onchange = updateCata(nameinput.value)>
+                            <option value = 0.1>V (10%)</option>
+                            <option value = 0.08>IV (8%)</option>
+                            <option value = 0.06>III (6%)</option>
+                            <option value = 0.04>II (4%)</option>
+                            <option value = 0.02>I (2%)</option>
+                            <option value = 0>0 (0%)</option>
+                        </select>
+                    </td>
+                </tr>   
+                <tr>
+                    <td>
+                        <label>Unbridled Rage (Berserk XP Boost):</label></td>
+                        <td> <select id = "bersboost" value = "1.1" onchange = updateCata(nameinput.value)>
+                            <option value = 0.1>V (10%)</option>
+                            <option value = 0.08>IV (8%)</option>
+                            <option value = 0.06>III (6%)</option>
+                            <option value = 0.04>II (4%)</option>
+                            <option value = 0.02>I (2%)</option>
+                            <option value = 0>0 (0%)</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Heart of Gold (Healer XP Boost):</label></td>
+                        <td> <select id = "healboost" value = "1.1" onchange = updateCata(nameinput.value)>
+                            <option value = 0.1>V (10%)</option>
+                            <option value = 0.08>IV (8%)</option>
+                            <option value = 0.06>III (6%)</option>
+                            <option value = 0.04>II (4%)</option>
+                            <option value = 0.02>I (2%)</option>
+                            <option value = 0>0 (0%)</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Cold Efficiency (Mage XP Boost):</label></td>
+                        <td> <select id = "mageboost" value = "1.1" onchange = updateCata(nameinput.value)>
+                            <option value = 0.1>V (10%)</option>
+                            <option value = 0.08>IV (8%)</option>
+                            <option value = 0.06>III (6%)</option>
+                            <option value = 0.04>II (4%)</option>
+                            <option value = 0.02>I (2%)</option>
+                            <option value = 0>0 (0%)</option>
+                        </select>
+                    </td>
+                </tr> 
+                <tr>
+                    <td>
+                        <label>Diamond in the Rough (Tank XP Boost):</label></td>
+                        <td> <select id = "tankboost" value = "1.1" onchange = updateCata(nameinput.value)>
+                            <option value = 0.1>V (10%)</option>
+                            <option value = 0.08>IV (8%)</option>
+                            <option value = 0.06>III (6%)</option>
+                            <option value = 0.04>II (4%)</option>
+                            <option value = 0.02>I (2%)</option>
+                            <option value = 0>0 (0%)</option>
+                        </select>
+                    </td>
+                </tr> 
+            </table>
+            <table style = "width:100%">
+                <tr><td><label>Runs until Catacombs <input id = "targetcata" type = "number" min = "1" max = "10000" style = "width:60px;" value = "50" onchange = updateCata(nameinput.value)></label></td></td><td><span id = "cataruns" class = "flex_align_right"></span></td></tr>
+                <tr><td><span class = "flex_full_row">Until <span style = "color:#ff8888; padding-right: 8px; padding-left: 8px;">Archer</span> complete: <sup style = "font-size:8px"><span class = tip id = "archtip">🛈<span class = tiptext style = "font-size: 12px;">"Completing" a class is defined as having the minimum amount of XP required to reach Class Average 50 by finishing a minimal number of runs using the other four classes.</span></span></sup></td><td><span id = "archruns" class = "flex_align_right"></span></td></tr>
+                <tr><td><span class = "flex_full_row">Until <span style = "color:#ffbb88; padding-right: 8px; padding-left: 8px;">Berserk</span> complete: <sup style = "font-size:8px"><span class = tip id = "berstip">🛈<span class = tiptext style = "font-size: 12px;">"Completing" a class is defined as having the minimum amount of XP required to reach Class Average 50 by finishing a minimal number of runs using the other four classes.</span></span></sup></td><td><span id = "bersruns" class = "flex_align_right"></span></td></tr>
+                <tr><td><span class = "flex_full_row">Until <span style = "color:#bb88ff; padding-right: 8px; padding-left: 8px;">Healer</span> complete: <sup style = "font-size:8px"><span class = tip id = "healtip">🛈<span class = tiptext style = "font-size: 12px;">"Completing" a class is defined as having the minimum amount of XP required to reach Class Average 50 by finishing a minimal number of runs using the other four classes.</span></span></sup></td><td><span id = "healruns" class = "flex_align_right"></span></td></tr>
+                <tr><td><span class = "flex_full_row">Until <span style = "color:#88ffff; padding-right: 8px; padding-left: 8px;">Mage</span> complete: <sup style = "font-size:8px"><span class = tip id = "magetip">🛈<span class = tiptext style = "font-size: 12px;">"Completing" a class is defined as having the minimum amount of XP required to reach Class Average 50 by finishing a minimal number of runs using the other four classes.</span></span></sup></td><td><span id = "mageruns" class = "flex_align_right"></span></td></tr>
+                <tr><td><span class = "flex_full_row">Until <span style = "color:#88ff88; padding-right: 8px; padding-left: 8px;">Tank</span> complete: <sup style = "font-size:8px"><span class = tip id = "tanktip">🛈<span class = tiptext style = "font-size: 12px;">"Completing" a class is defined as having the minimum amount of XP required to reach Class Average 50 by finishing a minimal number of runs using the other four classes.</span></span></sup></td><td><span id = "tankruns" class = "flex_align_right"></span></td></tr>
+                <tr><td><span class = "flex_full_row">Until Class Average 50: </span></td><td><span id = "totalruns" class = "flex_align_right"></span></td></tr>
+                <tr><td><span class = "flex_full_row">Copyable text: </span></td><td class = "flex_align_right"><span id = "copynotif" class = "fadebox" style = "opacity:0">Copied!&nbsp;</span><button onclick = copyText() style = "width: 50px">Copy!</button></td></tr>
+            </table>
+
+        </div>
+    </div>
+    <div class = "flex_index_row" style = "width:95%; align-items: stretch; ;" id = "catarow">
+        <div class = "flex_cata_box" id = "floorstatbox" style = "width:105%;">
+            <span class = "header flex_full_row" style = "margin-bottom:10px;">Dungeon Stats</span>
+
+            <table style = "align-items:flex-end">
+            <tr><td><span class = "flex_full_row">Secrets found: </span></td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td class = "tdalignright"><span id = "secrets_found">0</span></td></tr>
+            <tr><td><span class = "flex_full_row">Journals completed: </span></td><td></td><td class = "tdalignright"><span id = "journals_complete">0</span></td></tr>
+            <tr><td><span class = "flex_full_row">Selected class: </span></td><td></td><td class = "tdalignright"><span id = "class_selected">Archer</span></td></tr>
+            
+            </table>
+            <span class = "header  flex_full_row" style = "margin-top:10px; margin-bottom:10px;">Floor Stats</span>
+            <!--Floor selector goes here -->
+            <span class = "flex_full_row">Mode&nbsp;<select id = "mastertoggle" style = "height:21px;" value = "1.1" onchange = updateStats()>
+                <option value = "catacombs">Standard</option>
+                <option value = "master_catacombs">Master</option>
+            </select></span>
+            <span class = "flex_full_row">Floor&nbsp;<select id = "floorstats" style = "height:21px;" value = "1.1" onchange = updateStats()>
+                <option value = 7>VII</option>
+                <option value = 6>VI</option>
+                <option value = 5>V</option>
+                <option value = 4>IV</option>
+                <option value = 3>III</option>
+                <option value = 2>II</option>
+                <option value = 1>I</option>
+                <option value = 0>Entrance</option>
+            </select></span>
+            <table style = "align-items:flex-end">
+                <tr><td><span class = "flex_full_row">Best Score:&nbsp;</span></td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td class = "tdalignright"><span id = "topscore">0</span></td>
+                <tr><td><span class = "flex_full_row">Personal Best (S+):&nbsp;</span></td><td></td><td class = "tdalignright"><span id = "pbsplus">0m 0s</span></td>
+                <tr><td><span class = "flex_full_row">Personal Best (S):&nbsp;</span></td><td></td><td class = "tdalignright"><span id = "pbs">0m 0s</span></td>
+                <tr><td><span class = "flex_full_row">Milestone Completions:&nbsp;</span></td><td></td><td class = "tdalignright"><span id = "ms">0</span></td>
+                
+            </table>
+            
+
+        <div>
+    </div>
+    
+
+        </div>
+        
+    </div>
+    <div class = "flex_index_row" style = "width:95%;" id = "catarow">
+        <div class = "flex_cata_box" id = "rngbox" style = "width:105%; min-height: 50px; max-height: 60px;">
+            <span class = "header flex_full_row" style = "height:20px; margin-bottom:10px;">Loot Calculator</span>
+            <span class = "flex_full_row" style = "margin-top:10px; margin-bottom:10px;">A loot calculator is available at <a href = "https://calc.pigicial.com" style = "margin-left: 10px; color: #5480f8;"> Pigicial's website</a>.</span>
+        </div>
+    </div>
+  </section>
+  <span id = "footer"></span>
+  </body>
+  <script src = "apireader.js"></script>
+  <script>
+    pagedata = ["Dungeons", "#896b46"];
+    const classxps = [50, 75, 110, 160, 230, 330, 470, 670, 950, 1340, 1890, 2665, 3760, 5260, 7380, 10300, 14400, 20000, 27600, 38000, 52500, 71500, 97000, 132000, 180000, 243000, 328000, 445000, 600000, 800000, 1065000, 1410000, 1900000, 2500000, 3300000, 4300000, 5600000, 7200000, 9200000, 12000000, 15000000, 19000000, 24000000, 30000000, 38000000, 48000000, 60000000, 75000000, 93000000, 116250000, 200000000];
+    var classes = ["archer", "berserk", "healer", "mage", "tank"];
+    var classesabbrev = ["arch", "bers", "heal", "mage", "tank"];
+    const totalxp = 569809640;
+    var copyabletext = "";
+    var data = undefined;
+    function updatePage(){
+        updateSizes();
+        if (localStorage.getItem("storedname") != null){
+            //console.log("Found a previous name and data! Loading...");
+            //console.log("Previous name: " + localStorage.getItem("storedname"));
+            //console.log("Previous data: " + localStorage.getItem("storeddata"));
+            document.getElementById("nameinput").value = localStorage.getItem("storedname");
+            data = JSON.parse(localStorage.getItem("storeddata"));
+            fasttrack = true;
+            updateUser(localStorage.getItem("storedname"));
+        }
+    }
+    
+    var onCD = false;
+    var profilelist;
+    var UUID;
+    function reset(){
+      document.getElementById("dailyruns").innerText = "0";
+      document.getElementById("dailytoday").innerHTML = "...";
+      document.getElementById("status").innerText = "";
+      document.getElementById("otherstatus").innerText = "";
+      document.getElementById("catalevel").innerText = "...";
+      document.getElementById("catalevel").style.color = "#c0c0c0";
+      document.getElementById("archlevel").innerText = "...";
+      document.getElementById("archlevel").style.color = "#c0c0c0";
+      document.getElementById("berslevel").innerText = "...";
+      document.getElementById("berslevel").style.color = "#c0c0c0";
+      document.getElementById("heallevel").innerText = "...";
+      document.getElementById("heallevel").style.color = "#c0c0c0";
+      document.getElementById("magelevel").innerText = "...";
+      document.getElementById("magelevel").style.color = "#c0c0c0";
+      document.getElementById("tanklevel").innerText = "...";
+      document.getElementById("tanklevel").style.color = "#c0c0c0";
+      document.getElementById("cataruns").innerText = "...";
+      document.getElementById("archruns").innerText = "...";
+      document.getElementById("bersruns").innerText = "...";
+      document.getElementById("healruns").innerText = "...";
+      document.getElementById("mageruns").innerText = "...";
+      document.getElementById("tankruns").innerText = "...";
+      document.getElementById("totalruns").innerText = "...";
+      document.getElementById("catapercent").innerText = "...";
+      document.getElementById("archpercent").innerText = "...";
+      document.getElementById("berspercent").innerText = "...";
+      document.getElementById("healpercent").innerText = "...";
+      document.getElementById("magepercent").innerText = "...";
+      document.getElementById("tankpercent").innerText = "...";
+      document.getElementById("gooutside").innerText = "";
+      document.getElementById("secrets_found").innerText = "0";
+      document.getElementById("journals_complete").innerText = "0";
+      document.getElementById("class_selected").innerText = "0";
+      document.getElementById("pbsplus").innerText = "00s";
+      document.getElementById("pbs").innerText = "00s";
+      document.getElementById("ms").innerText = "0";
+      document.getElementById("topscore").innerText = "0";
+    }
+    var lastname = "";
+    function abbreviate(input){
+        if (input > 1000){
+            if (input > 1000000){
+                input = (input / 1000000).toFixed(1) + "M";
+            } else {
+                input = (input / 1000).toFixed(1) + "K";
+            }
+        }
+        return input;
+    }
+    var fasttrack = false;
+    async function updateUser(name){
+        if (onCD == true){
+            document.getElementById("refreshstatus").innerText = "Please wait 5 seconds before using this again.";
+            console.log("On cooldown!");
+            return -1;
+        } else {
+            document.getElementById("refreshstatus").innerText = "";
+            if (!fasttrack){
+                onCD = true;
+                setTimeout(() => { onCD = false }, 5000);
+            }
+            
+        }
+        reset();
+        UUID = await getUUIDbyName(name);
+        if (UUID == -1){
+            return -1;
+        }
+        if (!fasttrack){
+            data = await getAPIdata(UUID);
+            //console.log(data);
+        } 
+        if (lastname != name){
+            updateProfiles(data);
+        }
+            lastname = name;
+            fasttrack = false;
+            localStorage.setItem("storedname", name);
+            //console.log("Set item " + localStorage.getItem("storedname"));
+            try {
+                localStorage.setItem("storeddata", JSON.stringify(data)); 
+            } catch {
+                document.getElementById("status").innerText = "Data will not be cached, profile size is too large";
+            }
+            
+            //console.log("Set item " + localStorage.getItem("storeddata"));
+            try {
+                archboost.value = notUndefined(data.profiles[profileid.value].members[UUID].player_data.perks.toxophilite) * 0.02;
+            } catch {
+                console.log("Toxophilite defaulted");
+                archboost.value = 0;
+            }
+            try {
+                bersboost.value = notUndefined(data.profiles[profileid.value].members[UUID].player_data.perks.unbridled_rage) * 0.02;
+            } catch {
+                console.log("Unbridled Rage defaulted");
+                bersboost.value = 0;
+            }
+            try {
+                healboost.value = notUndefined(data.profiles[profileid.value].members[UUID].player_data.perks.heart_of_gold) * 0.02;
+            } catch {
+                console.log("Heart of Gold defaulted");
+                healboost.value = 0;
+            }
+            try {
+                mageboost.value = notUndefined(data.profiles[profileid.value].members[UUID].player_data.perks.cold_efficiency) * 0.02;
+            } catch {
+                console.log("Cold Efficiency defaulted");
+                mageboost.value = 0;
+            }
+            try {
+                tankboost.value = notUndefined(data.profiles[profileid.value].members[UUID].player_data.perks.diamond_in_the_rough) * 0.02;
+            } catch {
+                console.log("Diamond in the Rough defaulted");
+                tankboost.value = 0;
+            }
+            
+            try {
+                scarfshardlevel.value = 0.2 /*notUndefined(data.profiles[profileid.value].members[UUID].player_data  insert route here when they release it) */;
+            } catch {
+                console.log("Catacombs Graduate defaulted");
+                scarfshardlevel.value = 0;
+            }
+            
+
+            updateCata(name);
+    }
+    function notUndefined (input) {
+        if (input == undefined) {
+            return 0;
+        }
+        return input;
+    }
+    //Is advanced mode on?
+    //Note: Always on by default pending review.
+    var overmax = 1;
+    async function updateCata(name){
+        
+        try {
+            var dungeons = data.profiles[profileid.value].members[UUID].dungeons;
+            var cataxp =  dungeons.dungeon_types.catacombs.experience;
+            var time = Math.floor(Date.now()/1000);
+            var realdaylen = 86400;
+            var realdaystamp = Math.floor(time / realdaylen);
+            if (dungeons.daily_runs.current_day_stamp == realdaystamp){
+                document.getElementById("dailyruns").innerText = Math.max(0, 5 - (dungeons.daily_runs.completed_runs_count));
+                document.getElementById("dailytoday").innerText = "(" + dungeons.daily_runs.completed_runs_count.toLocaleString() + " today)";
+                if (dungeons.daily_runs.completed_runs_count >= 100){
+                    document.getElementById("gooutside").innerText = "(Go outside...)";
+                }
+            } else {
+                document.getElementById("dailyruns").innerText = 5;
+                document.getElementById("dailytoday").innerText = "(0 today)";
+            }
+            
+            if (targetcata.value > 10000) {
+                targetcata.value = 10000;
+            }
+            if (targetcata.value < 1) {
+                targetcata.value = 1;
+            }
+            var targetcatalevel = targetcata.value;
+            var targetcataxp = 0;
+            if (overmax == 0) {
+                for (var i = 0; i < 60; i++){
+                    cataxp -= classxps[i];
+                    if (cataxp <= 0){
+                        cataxp += (classxps[i]);
+                        cataxp = Math.floor(cataxp);
+                        document.getElementById("catalevel").innerText = i;
+                        document.getElementById("catapercent").innerText = abbreviate(cataxp) + "/" + abbreviate(classxps[i]);
+                        break;
+                    }
+                }
+                if (i >= 60){
+                    document.getElementById("catalevel").innerText = i;
+                    document.getElementById("catapercent").innerText = "Congrats!";
+                } else if (i >= targetcatalevel) {
+                    document.getElementById("catalevel").innerText = i;
+                    document.getElementById("catapercent").innerText = abbreviate(cataxp) + "/" + abbreviate(classxps[i]);
+                }
+            } else {
+                let i = 0;
+                for (i; i <= 50; i++){
+                    cataxp -= classxps[i];
+                    if (cataxp <= 0){
+                        cataxp += (classxps[i]);
+                        cataxp = Math.floor(cataxp);
+                        document.getElementById("catalevel").innerText = i;
+                        document.getElementById("catapercent").innerText = abbreviate(cataxp) + "/" + abbreviate(classxps[i]);
+                        break;
+                    }
+                }
+                
+                
+                while (cataxp > 0) {
+                    cataxp -= 200000000;
+                    if (cataxp <= 0){
+                        
+                        cataxp += 200000000;
+                        cataxp = Math.floor(cataxp);
+                        document.getElementById("catalevel").innerText = i;
+                        
+                        if (i >= 50) {
+                            document.getElementById("catapercent").innerText = abbreviate(cataxp) + "/" + abbreviate(200000000);
+                            document.getElementById("catalevel").style.color = "#ffaa00";
+                        } else {
+                            document.getElementById("catapercent").innerText = abbreviate(cataxp) + "/" + abbreviate(classxps[i]);
+                        }
+                        break;
+                    }
+                    
+                    i++;
+                }
+            }
+            
+            
+            //Set the levels of the classes
+            var classlevels = [0, 0, 0, 0, 0];
+            for (var i = 0; i < 5; i++){
+                var xp = dungeons.player_classes[classes[i]].experience;
+                if (overmax == 0) {
+                    for (var j = 0; j < 50; j++){
+                        xp -= classxps[j];
+                        if (xp <= 0){
+                            xp += (classxps[j]);
+                            xp = Math.floor(xp);
+                            //this is to avoid floating point rounding errors
+                            var xppercent = Math.floor((xp/classxps[j]).toFixed(4) * 10000) / 100;
+                            document.getElementById(classesabbrev[i] + "level").innerText = j;
+                            document.getElementById(classesabbrev[i] + "percent").innerText = abbreviate(xp) + "/" + abbreviate(classxps[j]);
+                            break;
+                        }
+                    }
+                    if (j == 50){
+                        console.log("Failsafe triggered, congrats on being " + classesabbrev[i] + " 50");
+                        document.getElementById(classesabbrev[i] + "level").innerText = 50;
+                        document.getElementById(classesabbrev[i] + "percent").innerText = "Congrats!";
+                    }
+                } else {
+                    let j = 0;
+                    for (j; j < 50; j++){
+                        xp -= classxps[j];
+                        if (xp <= 0){
+                            xp += (classxps[j]);
+                            xp = Math.floor(xp);
+                            //this is to avoid floating point rounding errors
+                            var xppercent = Math.floor((xp/classxps[j]).toFixed(4) * 10000) / 100;
+                            document.getElementById(classesabbrev[i] + "level").innerText = j;
+                            document.getElementById(classesabbrev[i] + "percent").innerText = abbreviate(xp) + "/" + abbreviate(classxps[j]);
+                            break;
+                        }
+                    }
+                    while (xp > 0) {
+                        
+                        xp -= 200000000;
+                        if (xp <= 0){
+                            xp += 200000000;
+                            xp = Math.floor(xp);
+                            document.getElementById(classesabbrev[i] + "level").innerText = j;
+                            
+                            if (j >= 50) {
+                                document.getElementById(classesabbrev[i] + "level").style.color = "#ffaa00";
+                                document.getElementById(classesabbrev[i] + "percent").innerText = abbreviate(xp) + "/" + abbreviate(200000000);
+                            } else {
+                                document.getElementById(classesabbrev[i] + "percent").innerText = abbreviate(xp) + "/" + abbreviate(classxps[j]);
+                            }
+                            classlevels[i] = j;
+                            break;
+                        }
+                        j++;
+                        
+                    }
+                }
+                
+            }
+            //Get remaining xps
+            cataxp = dungeons.dungeon_types.catacombs.experience;
+            for (var i = 0; i < targetcatalevel; i++){
+                if (i <= 50) {
+                    targetcataxp += classxps[i];
+                } else {
+                    targetcataxp += 200000000;
+                }
+                
+            }
+            
+            var cataxpleft = Math.max(targetcataxp - cataxp, 0);
+            
+            //a, b, h, m, t
+            var classxpsleft = [
+                Math.max(569809640 - dungeons.player_classes[classes[0]].experience, 0),
+                Math.max(569809640 - dungeons.player_classes[classes[1]].experience, 0),
+                Math.max(569809640 - dungeons.player_classes[classes[2]].experience, 0),
+                Math.max(569809640 - dungeons.player_classes[classes[3]].experience, 0),
+                Math.max(569809640 - dungeons.player_classes[classes[4]].experience, 0),
+            ]   
+            //I will add integration with the API eventually
+            maxcomps = 76;
+            if (selectedfloor.value >= 15000) {
+                maxcomps = 26;
+            } else if (selectedfloor.value == 4880) {
+                maxcomps = 51;
+            }
+            var cataperrun = 0;
+            if (cataexpert.value > 0 && mayor.value > 1) {
+                cataperrun = selectedfloor.value * (0.95 + ((mayor.value - 1) + (maxcomps - 1)/100) + parseFloat(cataexpert.value) + parseFloat(hecatomb.value) +(maxcomps - 1) * (0.024 + parseFloat(hecatomb.value)/50))
+            } else if (cataexpert.value > 0) {
+                cataperrun = selectedfloor.value * (0.95 + parseFloat(cataexpert.value) + parseFloat(hecatomb.value) +(maxcomps - 1) * (0.024 + parseFloat(hecatomb.value)/50))
+            } else {
+                cataperrun = selectedfloor.value * (0.95 + parseFloat(hecatomb.value) + (maxcomps - 1) * (0.022 + parseFloat(hecatomb.value)/50))
+            }
+            
+            cataperrun *= global.value;
+            cataperrun = Math.ceil(cataperrun);
+            console.log("Cata xp left: " + cataxpleft);
+            console.log("Per run: " + cataperrun);
+
+            catarunsleft = Math.ceil(cataxpleft/cataperrun);
+            var classperrun = {
+                arch: selectedfloor.value * (1 + (parseFloat(hecatomb.value) * 2) + (parseFloat(archboost.value)) + parseFloat(grimoire.value) + parseFloat(scarfshardlevel.value)) * global.value * mayor.value,
+                bers: selectedfloor.value * (1 + (parseFloat(hecatomb.value)) * 2 + (parseFloat(bersboost.value)) + parseFloat(grimoire.value) + parseFloat(scarfshardlevel.value)) * global.value * mayor.value,
+                heal: selectedfloor.value * (1 + (parseFloat(hecatomb.value)) * 2 + (parseFloat(healboost.value)) + parseFloat(grimoire.value) + parseFloat(scarfshardlevel.value)) * global.value * mayor.value,
+                mage: selectedfloor.value * (1 + (parseFloat(hecatomb.value)) * 2 + (parseFloat(mageboost.value)) + parseFloat(grimoire.value) + parseFloat(scarfshardlevel.value)) * global.value * mayor.value,
+                tank: selectedfloor.value * (1 + (parseFloat(hecatomb.value)) * 2 + (parseFloat(tankboost.value)) + parseFloat(grimoire.value) + parseFloat(scarfshardlevel.value)) * global.value * mayor.value,
+            };
+            console.log(classperrun);
+            document.getElementById("cataruns").innerText = catarunsleft.toLocaleString();
+            var runstoca50 = [0, 0, 0, 0, 0];  
+            /* 
+            var runsToEnd = [0, 0, 0, 0, 0];
+            for (var i = 0; i < 5; i++){
+                var toNext = classxpsleft[i] - classxpsleft[i + 1];
+                runsToEnd[i] = Math.ceil(classxpsleft[i] / classperrun);
+            }
+            console.log(runsToEnd);
+            */
+
+            while (true){
+                var allnegative = true;
+                for (var i = 0; i < 5; i++){
+                    if (classxpsleft[i] > 0){
+                        allnegative = false;
+                    }
+                }
+                if (allnegative){
+                    break;
+                }
+
+                
+                var maxval = -1;
+                var maxindex = -1;
+                //get which class is currently lowest
+                for (var i = 0; i < 5; i++){
+                    if (classxpsleft[i] > maxval) {
+                        maxval = classxpsleft[i];
+                        maxindex = i;
+                    }
+                }
+
+                for (var i = 0; i < 5; i++){
+                    if (i == maxindex){
+                        classxpsleft[i] -= classperrun[classesabbrev[i]];
+                        runstoca50[i] += 1;
+                    } else {
+                        classxpsleft[i] -= (classperrun[classesabbrev[i]]/4);
+                    }
+                }
+                
+                
+                
+            }
+
+            
+            
+            var total = 0;
+            for (var i = 0; i < 5; i++){
+                var runs = runstoca50[i];
+                runs = runs.toLocaleString();
+                document.getElementById(classesabbrev[i] + "runs").innerText = runs.toLocaleString();
+                total += runstoca50[i];
+                
+                if (runstoca50[i] == 0 && classlevels[i] < 50) {
+                    document.getElementById(classesabbrev[i] + "tip").className = "fadeRed tip";
+                } else {
+                    document.getElementById(classesabbrev[i] + "tip").className = "tip";
+                }
+                
+            }
+            if (total != 0){
+                document.getElementById("totalruns").innerText = total.toLocaleString();
+                copyabletext = "[adjectils] It will take " + total.toLocaleString() + " " + selectedfloor.options[selectedfloor.selectedIndex].text + " runs for " + name + " to reach Class Average 50 (";
+                if (runstoca50[0] != 0) {
+                    copyabletext = copyabletext.concat(runstoca50[0].toLocaleString() + " Archer, ")
+                } 
+                if (runstoca50[1] != 0) {
+                    copyabletext = copyabletext.concat(runstoca50[1].toLocaleString() + " Berserk, ")
+                } 
+                if (runstoca50[2] != 0) {
+                    copyabletext = copyabletext.concat(runstoca50[2].toLocaleString() + " Healer, ")
+                } 
+                if (runstoca50[3] != 0) {
+                    copyabletext = copyabletext.concat(runstoca50[3].toLocaleString() + " Mage, ")
+                }
+                if (runstoca50[4] != 0) {
+                    copyabletext = copyabletext.concat(runstoca50[4].toLocaleString() + " Tank, ")
+                } 
+
+                copyabletext = copyabletext.slice(0, -2);
+                copyabletext = copyabletext.concat(")");
+                console.log(copyabletext);
+                
+            } else {
+                document.getElementById("totalruns").innerText = "0, gg :)";
+                copyabletext = "[adjectils] " + name + " is Class Average 50, gg :)";
+            }
+            
+
+            
+            
+        } catch (TypeError){ 
+            console.log("Type error...");
+            document.getElementById("otherstatus").innerText = "This profile has no Dungeons stats!";
+        }
+        updateStats();
+    }
+    function updateStats() {
+        var dungeons = data.profiles[profileid.value].members[UUID].dungeons;
+        try {
+            document.getElementById("secrets_found").innerText = dungeons.secrets.toLocaleString();
+        } catch (Error) {
+            console.log("Error setting secret stats");
+        }
+        try {
+            document.getElementById("journals_complete").innerText = dungeons.dungeon_journal.unlocked_journals.length.toLocaleString() + "/25";
+        } catch (Error) {
+            console.log("Error setting journal stats");
+        }
+        try {
+            document.getElementById("class_selected").innerText = dungeons.selected_dungeon_class.replace(/^\w/, (c) => c.toUpperCase());
+        } catch (Error) {
+            console.log("Error setting selected class");
+        }
+        try {
+            if (mastertoggle.value == "master_catacombs" && floorstats.value == "0"){
+                document.getElementById("topscore").innerText = "0";
+            } else {
+                document.getElementById("topscore").innerText = dungeons.dungeon_types[mastertoggle.value].best_score[floorstats.value];
+            }
+            
+        } catch (Error) {
+            document.getElementById("topscore").innerText = "0";
+            console.log("Error setting PB score");
+        }
+        try {
+            if (mastertoggle.value == "master_catacombs" && floorstats.value == "0") {
+                document.getElementById("pbsplus").innerText = betterTimestamp(0);
+            } else {
+                document.getElementById("pbsplus").innerText = betterTimestamp(Math.floor(parseInt(dungeons.dungeon_types[mastertoggle.value].fastest_time_s_plus[floorstats.value])/1000));
+            }
+        } catch (Error) {
+            console.log("Error setting PB S+");
+        }
+        try {
+            if (mastertoggle.value == "master_catacombs" && floorstats.value == "0") {
+                document.getElementById("pbs").innerText = betterTimestamp(0);
+            } else {
+                document.getElementById("pbs").innerText = betterTimestamp(Math.floor(parseInt(dungeons.dungeon_types[mastertoggle.value].fastest_time_s[floorstats.value])/1000));
+            }
+        } catch (Error) {
+            console.log("Error setting PB S+");
+        }
+        try {
+            if (mastertoggle.value == "master_catacombs" && floorstats.value == "0") {
+                document.getElementById("ms").innerText = "0";
+            } else {
+                document.getElementById("ms").innerText = dungeons.dungeon_types[mastertoggle.value].milestone_completions[floorstats.value];
+            }
+        } catch (Error) {
+            console.log("Error setting tier comps");
+        }
+    }
+    function copyText(){
+        var box = document.getElementById("copynotif");
+        box.classList.remove("fade");
+        void box.offsetWidth;
+        if (copyabletext != ""){
+            const textarea = document.createElement("textarea");
+            textarea.value = copyabletext;
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(textarea.value);
+        }
+        box.classList.add("fade");
+
+    }
+    window.addEventListener('resize', function() {
+        updateSizes();
+    });
+    
+    function updateSizes(){
+        console.log("Current width: " + window.innerWidth);
+        if (window.innerWidth >= 768 * (5/3)) {
+            console.log("Desktop mode...");
+            document.getElementById("catarow").style.flexWrap = "nowrap";
+            document.getElementById("levelsbox").style.flexBasis = "29%";
+            document.getElementById("calcbox").style.flexBasis = "69%";
+            document.getElementById("allbox").style.margin = "";
+            document.getElementById("allbox").style.margin = "auto";
+        } else {
+            console.log("Mobile mode...");
+            document.getElementById("levelsbox").style.flexBasis = "100%";
+            document.getElementById("calcbox").style.flexBasis = "100%";
+            document.getElementById("catarow").style.flexWrap = "wrap";
+            document.getElementById("allbox").style.margin = "";
+            document.getElementById("allbox").style.margin = "auto";
+        }
+    }
+  </script>

@@ -1,0 +1,18 @@
+name = "bomboapi"
+main = "src/index.js"
+compatibility_date = "2025-10-30"
+
+# Treat HTML/CSS imports as text modules so they can be inlined/served
+rules = [
+  { type = "Text", globs = ["**/*.html", "**/*.css"], fallthrough = false }
+  , { type = "Data", globs = ["**/*.zip"], fallthrough = true }
+]
+
+[assets]
+directory = "textures"
+binding = "PACK"
+
+[build.upload]
+format = "modules"
+dir = "src"
+main = "index.js"

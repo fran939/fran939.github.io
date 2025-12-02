@@ -1,0 +1,7 @@
+      const parts = [];
+      if (icons) parts.push(icons);
+      if (goldCollection) parts.push(`[${escapeHtml(formatCompact(goldCollection))} ⛏️]`);
+      if (bankBalance) parts.push(`[${escapeHtml(formatCompact(bankBalance))} Bank]`);
+      rows.push(`<div class=\"endpoint\"><div class=\"method get\">G-Drag</div><div class=\"path\">✔</div><div class=\"desc\">Golden Dragon ${parts.length?`\u0007 ${parts.join(' \u0007 ')}`:''}</div></div>`);
+    } else {
+      rows.push(`<div class=\"endpoint\"><div class=\"method get\">G-Drag</div><div class=\"path\">✖</div><div class=\"desc\">Not owned</div></div>`);

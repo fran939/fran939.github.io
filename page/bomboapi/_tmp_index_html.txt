@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BomboAPI — Hypixel SkyBlock Helper</title>
+  <meta name="description" content="Simple API for Hypixel SkyBlock profiles with an optional RTCA calculation endpoint." />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <div class="badge">Workers.dev</div>
+      <h1>BomboAPI</h1>
+      <p class="lead">Minimal API for Hypixel SkyBlock. Fetch a player’s selected or named profile, or compute RTCA details — fast, from Cloudflare’s edge.</p>
+
+      <div class="cta">
+        <a class="btn primary" href="#quickstart">Quick Start</a>
+        <a class="btn" href="#endpoints">Endpoints</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="try-it" class="card">
+      <h2>Try It</h2>
+      <p>Enter a Minecraft IGN to query this API directly.</p>
+      <form id="try-form" class="try-form" onsubmit="return false;">
+        <input id="ign-input" class="input" placeholder="e.g. bomboclas" aria-label="IGN" />
+        <div class="btn-row">
+          <button class="btn primary" data-kind="selected">Selected Profile</button>
+          <button class="btn" data-kind="rtca">RTCA</button>
+          <button class="btn" data-kind="pv">Player Viewer</button>
+        </div>
+      </form>
+
+      <div class="grid">
+        <div class="card subtle">
+          <h3>Selected Profile</h3>
+          <pre id="result-selected" class="code-block" aria-live="polite" aria-busy="false">{ /* selected profile JSON */ }</pre>
+          <div class="btn-row right">
+            <button class="btn" data-copy="selected" type="button">Copy</button>
+            <button class="btn" data-download="selected" type="button">Download</button>
+          </div>
+        </div>
+        <div class="card subtle">
+          <h3>RTCA</h3>
+          <details>
+            <summary>Options</summary>
+            <div class="grid" style="gap: 8px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+              <label>Floor
+                <select id="rtca-floor">
+                  <option value="300000">M7</option>
+                  <option value="100000">M6</option>
+                  <option value="70000">M5</option>
+                  <option value="55000">M4</option>
+                  <option value="35000">M3</option>
+                  <option value="20000">M2</option>
+                  <option value="15000" selected>M1</option>
+                  <option value="28000">F7</option>
+                  <option value="4880">F6</option>
+                  <option value="2400">F5</option>
+                  <option value="1420">F4</option>
+                  <option value="560">F3</option>
+                  <option value="220">F2</option>
+                  <option value="110">F1</option>
+                  <option value="55">Entrance</option>
+                </select>
+              </label>
+              <label>Catacombs Expert Ring
+                <select id="rtca-cataexpert">
+                  <option value="0.1">Yes</option>
+                  <option value="0">No</option>
+                </select>
+              </label>
+              <label>Hecatomb
+                <select id="rtca-hecatomb">
+                  <option value="0.02">X</option>
+                  <option value="0.0184">IX</option>
+                  <option value="0.0168">VIII</option>
+                  <option value="0.0152">VII</option>
+                  <option value="0.0136">VI</option>
+                  <option value="0.012">V</option>
+                  <option value="0.0104">IV</option>
+                  <option value="0.0088">III</option>
+                  <option value="0.0072">II</option>
+                  <option value="0.0056">I</option>
+                  <option value="0" selected>0</option>
+                </select>
+              </label>
+              <label>Scarf Accessory
+                <select id="rtca-grimoire">
+                  <option value="0.06">Grimoire (6%)</option>
+                  <option value="0.04">Thesis (4%)</option>
+                  <option value="0.02">Studies (2%)</option>
+                  <option value="0">None</option>
+                </select>
+              </label>
+              <label>Global Boost
+                <select id="rtca-global">
+                  <option value="1" selected>0%</option>
+                  <option value="1.05">5%</option>
+                  <option value="1.1">10%</option>
+                  <option value="1.15">15%</option>
+                  <option value="1.2">20%</option>
+                </select>
+              </label>
+              <label>Mayor
+                <select id="rtca-mayor">
+                  <option value="1" selected>0%</option>
+                  <option value="1.5">Derpy (50%)</option>
+                </select>
+              </label>
+              <label>Catacombs Graduate
+                <select id="rtca-scarf">
+                  <option value="0">0 (0%)</option>
+                  <option value="0.02">I (2%)</option>
+                  <option value="0.04">II (4%)</option>
+                  <option value="0.06">III (6%)</option>
+                  <option value="0.08">IV (8%)</option>
+                  <option value="0.1">V (10%)</option>
+                  <option value="0.12">VI (12%)</option>
+                  <option value="0.14">VII (14%)</option>
+                  <option value="0.16">VIII (16%)</option>
+                  <option value="0.18">IX (18%)</option>
+                  <option value="0.2">X (20%)</option>
+                </select>
+              </label>
+              <label>Archer Boost
+                <select id="rtca-arch">
+                  <option value="0.1">V (10%)</option>
+                  <option value="0.08">IV (8%)</option>
+                  <option value="0.06">III (6%)</option>
+                  <option value="0.04">II (4%)</option>
+                  <option value="0.02">I (2%)</option>
+                  <option value="0" selected>0 (0%)</option>
+                </select>
+              </label>
+              <label>Berserk Boost
+                <select id="rtca-bers">
+                  <option value="0.1">V (10%)</option>
+                  <option value="0.08">IV (8%)</option>
+                  <option value="0.06">III (6%)</option>
+                  <option value="0.04">II (4%)</option>
+                  <option value="0.02">I (2%)</option>
+                  <option value="0" selected>0 (0%)</option>
+                </select>
+              </label>
+              <label>Healer Boost
+                <select id="rtca-heal">
+                  <option value="0.1">V (10%)</option>
+                  <option value="0.08">IV (8%)</option>
+                  <option value="0.06">III (6%)</option>
+                  <option value="0.04">II (4%)</option>
+                  <option value="0.02">I (2%)</option>
+                  <option value="0" selected>0 (0%)</option>
+                </select>
+              </label>
+              <label>Mage Boost
+                <select id="rtca-mage">
+                  <option value="0.1">V (10%)</option>
+                  <option value="0.08">IV (8%)</option>
+                  <option value="0.06">III (6%)</option>
+                  <option value="0.04">II (4%)</option>
+                  <option value="0.02">I (2%)</option>
+                  <option value="0" selected>0 (0%)</option>
+                </select>
+              </label>
+              <label>Tank Boost
+                <select id="rtca-tank">
+                  <option value="0.1">V (10%)</option>
+                  <option value="0.08">IV (8%)</option>
+                  <option value="0.06">III (6%)</option>
+                  <option value="0.04">II (4%)</option>
+                  <option value="0.02">I (2%)</option>
+                  <option value="0" selected>0 (0%)</option>
+                </select>
+              </label>
+            </div>
+          </details>
+          <div id="rtca-summary" class="muted" style="margin: 8px 0 4px 0;"></div>
+          <pre id="result-rtca" class="code-block" aria-live="polite" aria-busy="false">{ /* rtca JSON */ }</pre>
+          <div class="btn-row right">
+            <button class="btn" data-copy="rtca" type="button">Copy</button>
+            <button class="btn" data-download="rtca" type="button">Download</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card subtle">
+        <h3>Player Viewer</h3>
+        <iframe id="pv-frame" class="pv-frame" title="Player Viewer" style="display:none;"></iframe>
+      </div>
+    </section>
+
+    <section id="quickstart" class="grid">
+      <div class="card">
+        <h2>Quick Start</h2>
+        <ol>
+          <li>Set your Hypixel API key as a secret on Cloudflare:<br>
+            <code>npx wrangler secret put HYPIXEL_KEY</code>
+          </li>
+          <li>Run locally:
+            <ul>
+              <li>Remote dev (uses Cloudflare secret): <code>npx wrangler dev --remote</code></li>
+              <li>Or create <code>.dev.vars</code> with <code>HYPIXEL_KEY="your-key"</code> and run <code>npx wrangler dev</code></li>
+            </ul>
+          </li>
+          <li>Deploy: <code>npx wrangler deploy</code></li>
+        </ol>
+      </div>
+      <div class="card">
+        <h2>Fetch Example</h2>
+        <pre class="code-block"><code>// Selected profile
+const res = await fetch(`/${'{'}ign{'}'}`);
+const data = await res.json();
+
+// Specific profile by name
+const res2 = await fetch(`/${'{'}ign{'}'}/profile/${'{'}profileName{'}'}`);
+
+// RTCA (class levels / run estimate)
+const res3 = await fetch(`/${'{'}ign{'}'}/rtca`);</code></pre>
+      </div>
+    </section>
+
+    <section id="endpoints" class="card">
+      <h2>Endpoints</h2>
+      <div class="endpoints">
+        <div class="endpoint">
+          <div class="method get">GET</div>
+          <code class="path">/{ign}</code>
+          <div class="desc">Selected SkyBlock profile: <code>{ ign, profile, raw_profile }</code></div>
+        </div>
+        <div class="endpoint">
+          <div class="method get">GET</div>
+          <code class="path">/{ign}/profile/{name}</code>
+          <div class="desc">Specific profile by cute name: <code>{ ign, profile, raw_profile }</code></div>
+        </div>
+        <div class="endpoint">
+          <div class="method get">GET</div>
+          <code class="path">/{ign}/rtca</code>
+          <div class="desc">RTCA calculation with per‑class levels and run estimate.</div>
+        </div>
+      </div>
+
+      <details class="card subtle">
+        <summary>Sample Response (truncated)</summary>
+        <pre class="code-block"><code>{
+  "ign": "SomePlayer",
+  "profile": "Orange",
+  "raw_profile": { /* ... Hypixel raw profile object ... */ }
+}</code></pre>
+      </details>
+    </section>
+
+    <section class="card subtle">
+      <h2>Troubleshooting</h2>
+      <ul>
+        <li><strong>401/403 or error from Hypixel</strong>: ensure <code>HYPIXEL_KEY</code> is set and valid (rotate with <code>wrangler secret put HYPIXEL_KEY</code>).</li>
+        <li><strong>404 No profiles found</strong>: the IGN exists but has no SkyBlock profiles.</li>
+        <li><strong>400 Missing IGN</strong>: include an IGN as the first path segment.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer container">
+    <p>© <span id="year"></span> BomboAPI • Cloudflare Workers</p>
+  </footer>
+
+  <script>
+    // Simple interactive demo
+    (function () {
+      const form = document.getElementById('try-form');
+      const input = document.getElementById('ign-input');
+      const resSel = document.getElementById('result-selected');
+      const resRtca = document.getElementById('result-rtca');
+      const pvFrame = document.getElementById('pv-frame');
+      const setBusy = (busy) => result.setAttribute('aria-busy', String(busy));
+      const last = { selected: '', rtca: '' };
+
+      form.addEventListener('click', async (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        const ign = (input.value || '').trim();
+        if (!ign) {
+          result.textContent = 'Enter an IGN to query…';
+          return;
+        }
+        const kind = btn.getAttribute('data-kind');
+        if (kind === 'pv') {
+          pvFrame.style.display = 'block';
+          const tex = new URL(location.href).searchParams.get('tex');
+          const texParam = tex ? `?tex=${encodeURIComponent(tex)}` : '';
+          pvFrame.src = `/pv/${encodeURIComponent(ign)}${texParam}`;
+          return;
+        }
+        const target = kind === 'rtca' ? resRtca : resSel;
+        target.setAttribute('aria-busy', 'true');
+        try {
+          const path = kind === 'rtca' ? `/${ign}/rtca` : `/${ign}`;
+          const res = await fetch(path, { headers: { 'Accept': 'application/json' } });
+          const text = await res.text();
+          try {
+            const json = JSON.parse(text);
+            const pretty = JSON.stringify(json, null, 2);
+            target.textContent = pretty;
+            last[kind === 'rtca' ? 'rtca' : 'selected'] = pretty;
+          } catch (_) {
+            target.textContent = text;
+            last[kind === 'rtca' ? 'rtca' : 'selected'] = text;
+          }
+        } catch (err) {
+          const msg = 'Request failed: ' + (err?.message || String(err));
+          target.textContent = msg;
+          last[kind === 'rtca' ? 'rtca' : 'selected'] = msg;
+        } finally {
+          target.setAttribute('aria-busy', 'false');
+        }
+      });
+      document.addEventListener('click', async (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        const copyKey = btn.getAttribute('data-copy');
+        const dlKey = btn.getAttribute('data-download');
+        const ignSafe = (input.value || 'result').trim().replace(/[^a-z0-9_-]/gi, '_');
+        if (copyKey) {
+          try {
+            await navigator.clipboard.writeText(last[copyKey] || '');
+            btn.textContent = 'Copied!';
+            setTimeout(() => (btn.textContent = 'Copy'), 1000);
+          } catch (_) {
+            btn.textContent = 'Copy failed';
+            setTimeout(() => (btn.textContent = 'Copy'), 1000);
+          }
+        } else if (dlKey) {
+          const text = last[dlKey] || '';
+          const blob = new Blob([text], { type: 'application/json;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${ignSafe}-${dlKey}.json`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        }
+      });
+
+      // Footer year
+      document.getElementById('year').textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>

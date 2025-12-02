@@ -1,0 +1,23 @@
+.item-grid { display: grid; grid-template-columns: repeat(auto-fill, 64px); gap: 10px; }
+.item-card { position: relative; }
+.item-card .item-icon { width: 64px; height: 64px; border-radius: 10px; border: 1px solid var(--border); background-size: contain; background-position: center; background-repeat: no-repeat; image-rendering: pixelated; background-color: #101215; }
+.item-card .item-icon.empty { background: rgba(255,255,255,0.02); border-style: dashed; }
+.item-card .badge { position: absolute; background: rgba(0,0,0,0.6); color: #fff; font-size: 11px; padding: 2px 6px; border-radius: 8px; }
+.item-card .badge.count { bottom: 4px; right: 4px; }
+.item-card .badge.slot { top: 4px; left: 4px; color: #d1d5db; }
+.has-tooltip { position: relative; }
+.has-tooltip .tooltip { display: none; position: absolute; z-index: 20; top: 72px; left: 0; min-width: 240px; max-width: 360px; background: #0f0f10; color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.35); }
+.has-tooltip:hover .tooltip { display: block; }
+.has-tooltip.pinned .tooltip { display: block; }
+.tooltip-title { font-weight: 700; margin-bottom: 6px; color: var(--text); }
+.tooltip-lore { color: #e6edf3; margin: 0; }
+.tooltip-lore-line { white-space: pre-wrap; }
+.selector-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; position: relative; z-index: 50; pointer-events: auto; }
+.slot-icon { width: 22px; height: 22px; image-rendering: pixelated; }
+.tab-bar { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; position: relative; z-index: 40; }
+.item-overlay { position: fixed; right: 24px; top: 24px; width: 420px; max-height: calc(100vh - 48px); z-index: 90; background: var(--card); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); overflow: hidden; }
+.item-overlay .io-header { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-weight: 700; color: #fff; background: var(--accent); }
+.item-overlay .io-icon { width: 28px; height: 28px; background-size: cover; background-position: center; border-radius: 6px; border: 1px solid rgba(0,0,0,0.4); }
+.item-overlay .io-title { flex: 1; }
+.item-overlay .io-close { border: 0; background: rgba(0,0,0,0.25); color: #fff; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; }
+.item-overlay .io-body { padding: 12px; max-height: calc(100vh - 48px - 60px); overflow: auto; }

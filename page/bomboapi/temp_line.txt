@@ -1,0 +1,50 @@
+      </div>`;
+  };
+
+  const gridTiles = cells.map((c, i) => tile(c, i)).join('');
+  return `<div class="item-grid" style="grid-template-columns: repeat(${cols}, 64px); justify-content: start;">${gridTiles}</div>`;
+}
+
+
+// New rendering with grid, rarity overlay, and colored tooltips
+
+function mcColorToHex(color) {
+  const map = { black:'#000000', dark_blue:'#0000AA', dark_green:'#00AA00', dark_aqua:'#00AAAA', dark_red:'#AA0000', dark_purple:'#AA00AA', gold:'#FFAA00', gray:'#AAAAAA', dark_gray:'#555555', blue:'#5555FF', green:'#55FF55', aqua:'#55FFFF', red:'#FF5555', light_purple:'#FF55FF', yellow:'#FFFF55', white:'#FFFFFF' };
+  return map[color] || null;
+}
+
+function formatMcText(input) {
+  try {
+    const j = JSON.parse(input);
+    const parts = Array.isArray(j) ? j : (j?.extra ? [j, ...j.extra] : [j]);
+    return parts.map(seg => {
+      const txt = escapeHtml(seg?.text || (typeof seg === 'string' ? seg : ''));
+      const color = mcColorToHex(seg?.color);
+      const style = [ color?`color:${color}`:'', seg?.bold?'font-weight:700':'', seg?.italic?'font-style:italic':'', (seg?.underlined||seg?.underline)?'text-decoration:underline':'', seg?.strikethrough?'text-decoration:line-through':'' ].filter(Boolean).join(';');
+      return `<span style="${style}">${txt}</span>`;
+    }).join('');
+  } catch {
+    const codeMap = { '0':'#000000','1':'#0000AA','2':'#00AA00','3':'#00AAAA','4':'#AA0000','5':'#AA00AA','6':'#FFAA00','7':'#AAAAAA','8':'#555555','9':'#5555FF','a':'#55FF55','b':'#55FFFF','c':'#FF5555','d':'#FF55FF','e':'#FFFF55','f':'#FFFFFF' };
+    let cur = { color:null, bold:false, italic:false, underline:false, strike:false };
+    let out='';
+    const push=(text)=>{ if(!text) return; const style=[ cur.color?`color:${cur.color}`:'', cur.bold?'font-weight:700':'', cur.italic?'font-style:italic':'', (cur.underline||cur.strike)?`text-decoration:${[cur.underline?'underline':'', cur.strike?'line-through':''].filter(Boolean).join(' ')}`:'' ].filter(Boolean).join(';'); out+=`<span style="${style}">${escapeHtml(text)}</span>`; };
+    const s=String(input);
+    for(let i=0;i<s.length;i++){
+      if(s[i]==='§' && i+1<s.length){ const code=s[i+1]; i++; if(code==='l'){cur.bold=true; continue;} if(code==='o'){cur.italic=true; continue;} if(code==='n'){cur.underline=true; continue;} if(code==='m'){cur.strike=true; continue;} if(code==='r'){cur={ color:null,bold:false,italic:false,underline:false,strike:false }; continue;} if(codeMap[code]){cur.color=codeMap[code]; continue;} }
+      push(s[i]);
+    }
+    return out;
+  }
+}
+
+function getRarityColor(it) {
+  const lines = it.loreRaw || it.lore || [];
+  for (let i = lines.length - 1; i >= 0; i--) {
+    const plain = simplifyMcText(lines[i]).toUpperCase();
+    if (!plain) continue;
+    const map = { 'VERY SPECIAL':'#FF5555', 'SPECIAL':'#FF5555', 'ADMIN':'#AA0000', 'DIVINE':'#55FFFF', 'MYTHIC':'#FF55FF', 'LEGENDARY':'#FFAA00','EPIC':'#AA00AA','RARE':'#5555FF','UNCOMMON':'#55FF55','COMMON':'#FFFFFF' };
+    const keys = Object.keys(map).sort((a,b)=>b.length-a.length);
+    for (const key of keys) { if (plain.includes(key)) return map[key]; }
+  }
+  return null;
+}
